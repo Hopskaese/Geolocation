@@ -64,13 +64,15 @@ a2 = (a2 / 6371) * (180 / Math::PI)
 
 x = lat1
 y = long1 - a2
+cnt = 0
 
-(1..circles_verti).each do |i|
+(0..circles_verti).each do |i|
   x = lat1
   y += a2
-  (1..circles_hori).each do |j|
-    center_points[i*j] = [x,y]
+  (0..circles_hori).each do |j|
+    center_points[cnt] = [x,y]
     x += a2
+    cnt += 1
   end
 end
 
