@@ -37,6 +37,12 @@ radius = number_or_nil(ARGV[4])
 
 if(lat1 == nil || long1 == nil || lat2 == nil || long2 == nil || radius == nil)
 	abort("Was not able to transfer one or multiple input values to float")
+elsif(lat1 < 0 || long1 < 0 || lat2 < 0 || long2 < 0 || radius < 0)
+  abort("Found negative number")
+elsif(lat1 > 360 || lat2 > 360)
+  abort("Lat cant be bigger than 360 degrees!")
+elsif(long1 > 180 || long2 > 180)
+  abort("Long cant be bigger than 180 degrees!")
 end
 
 #calculating sides
