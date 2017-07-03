@@ -37,20 +37,18 @@ radius = number_or_nil(ARGV[4])
 
 if(lat1 == nil || long1 == nil || lat2 == nil || long2 == nil || radius == nil)
 	abort("Was not able to transfer one or multiple input values to float")
-elsif(lat1 < 0 || long1 < 0 || lat2 < 0 || long2 < 0 || radius < 0)
-  abort("Found negative number")
-elsif(lat1 > 360 || lat2 > 360)
+elsif(lat1 > 360 || lat1 < -360|| lat2 > 360 || lat2 < -360)
   abort("Lat cant be bigger than 360 degrees!")
-elsif(long1 > 180 || long2 > 180)
+elsif(long1 > 180 || long1 < -180 || long2 > 180 || long2 < -180)
   abort("Long cant be bigger than 180 degrees!")
 end
 
 #calculating sides
 loc1 = Array[lat1, long1]
-loc2 = Array[lat2, long1]
+loc2 = Array[lat1, long2]
 
 loc3 = Array[lat1, long1]
-loc4 = Array[lat1, long2]
+loc4 = Array[lat2, long1]
 
 a = distance(loc1, loc2)
 b = distance(loc3, loc4)
@@ -64,22 +62,31 @@ circles_verti = b / a2
 circles_hori = circles_hori.ceil
 circles_verti = circles_verti.ceil
 
-center_points = Hash.new(Array.new)
+#center_points = Hash.new(Array.new)
 
-a2 = (a2 / 6371) * (180 / Math::PI)
+new_lat = lat1 + (a2 / 6371) * (180 / Math::PI)
+new_long = long1 + (a2 / 6371) * (180 / Math::PI) / Math.cos(lat1 * Math::PI/180)
 
-x = lat1
-y = long1 - a2
+a2 = new_lat - lat1
+b2 = new_long - long1
+
+lat = lat1 + a2
+long = long1
 cnt = 0
 
-(0..circles_verti).each do |i|
-  x = lat1
-  y += a2
-  (0..circles_hori).each do |j|
-    center_points[cnt] = [x+a2/2,y+a2/2]
-    x += a2
-    cnt += 1
+file = open("output.txt", 'w')
+line = ""
+
+(1..circles_verti).each do |i|
+  lat -= a2
+  long = long1
+  (1..circles_hori).each do |j|
+   line = "#{(lat-a2/2)}, #{(long+b2/2)}"
+   file.write(line)
+   file.write("\n")
+   long += b2
+   cnt += 1
   end
 end
 
-puts center_points
+file.close
